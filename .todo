@@ -1,0 +1,28 @@
+TODO:
+  - Home: {
+      search button
+      list of shows, swipable to right or left with actions, info on top of show image
+      three headers: watching, watchlist, archive
+      Headers: {
+          Watching: two segments, watch & upcoming. for current watched tv shows
+          Watchlist: list of shows to be watched.
+          Archive: list of shows that have ended, canceled, or put there by user.
+      }
+  }
+
+  - ShowDetails: {
+      image of the show and poster
+      horizontal tabable list of show seasons
+      info about the show
+      list of episodes with watch action button
+      show cast in the end
+  }
+
+  - misc.: {
+      prompt for exiting the app
+      save list in local storage when exiting the app
+      load list from local storage when entering the app
+      MobX integrated
+      TMDB and trakt.tv apis integration
+      Show trending, most popular, ... before searching
+  }
