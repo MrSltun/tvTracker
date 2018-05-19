@@ -21,6 +21,7 @@
         "argsIgnorePattern": "res|next|^err"
       }
     ],
+    "global-require": "warn",
     "arrow-body-style": [2, "as-needed"],
     "no-param-reassign": [
       2,

@@ -1,46 +1,30 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react'
 import {
-  StyleSheet,
   Text,
   View,
   Dimensions,
   ImageBackground,
-  SegmentedControlIOS,
   ScrollView,
   TouchableHighlight,
+  TouchableOpacity,
   SectionList
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Swipable from 'react-native-swipeable'
 import LinearGradient from 'react-native-linear-gradient'
+import { observable } from 'mobx'
+import { observer } from 'mobx-react/native'
 
 const { width: w, height: h } = Dimensions.get('window')
-const leftContent = <Text>Pull to activate</Text>
 
-const rightButtons = [
-  <TouchableHighlight>
-    <Text>Button 1</Text>
-  </TouchableHighlight>,
-  <TouchableHighlight>
-    <Text>Button 2</Text>
-  </TouchableHighlight>
-]
-
+@observer
 export default class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedSegmentIndex: 0,
-      isSwiping: false
-    }
-  }
+  @observable headerTabs = ['Watching', 'Watchlist', 'Completed']
+  @observable selectedTabIndex = 0
+  @observable isSwiping = false
+  @observable leftActionActive = false
+  @observable rightActionActive = false
 
   render() {
     return (
@@ -58,19 +42,28 @@ export default class App extends Component {
           />
           <Text style={{ color: '#000', fontWeight: 'bold' }}>Welcome to TvTracker</Text>
         </View>
-        <View style={{ paddingVertical: 5, paddingHorizontal: 20 }}>
-          <SegmentedControlIOS
-            hitSlop={{ top: 5, bottom: 5 }}
-            style={{ backgroundColor: 'transparent' }}
-            tintColor="firebrick"
-            values={['Watching', 'Watchlist', 'Archive']}
-            selectedIndex={this.state.selectedSegmentIndex}
-            onChange={event => {
-              this.setState({ selectedSegmentIndex: event.nativeEvent.selectedSegmentIndex })
-            }}
-          />
+        <View style={{ paddingVertical: 5, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+          {this.headerTabs.map((item, i) => {
+            const selected = this.selectedTabIndex === i
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  this.selectedTabIndex = i
+                }}
+                key={item}
+                style={{
+                  margin: 3,
+                  paddingHorizontal: 16,
+                  paddingVertical: 2
+                }}>
+                <Text style={{ color: selected ? '#fff' : '#444', fontWeight: 'bold', fontSize: 15 }}>
+                  {item.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            )
+          })}
         </View>
-        <ScrollView scrollEnabled={!this.state.isSwiping}>
+        <ScrollView scrollEnabled={!this.isSwiping}>
           {/* {[1, 2, 3].map(item => (
             <Swipable
               // onRef={item => (this.swipy = item)}
@@ -104,15 +97,29 @@ export default class App extends Component {
 
           <Text style={{ paddingVertical: 5, color: '#aaa', fontSize: 18, paddingHorizontal: 5 }}>Airing</Text>
           <Swipable
-            onSwipeStart={() => this.setState({ isSwiping: true })}
-            onSwipeRelease={() => this.setState({ isSwiping: false })}
-            onLeftActionActivate={() => this.setState({ leftStuff: true })}
-            onLeftActionDeactivate={() => this.setState({ leftStuff: false })}
+            onSwipeStart={() => {
+              this.isSwiping = true
+            }}
+            onSwipeRelease={() => {
+              this.isSwiping = false
+            }}
+            onLeftActionActivate={() => {
+              this.leftActionActive = true
+            }}
+            onLeftActionDeactivate={() => {
+              this.leftActionActive = false
+            }}
             // onLeftActionRelease
             leftContent={
-              <View style={{ flex: 1, backgroundColor: 'purple', justifyContent: 'center', alignItems: 'flex-end' }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: this.leftActionActive ? '#000' : 'purple',
+                  justifyContent: 'center',
+                  alignItems: 'flex-end'
+                }}>
                 <View style={{ paddingHorizontal: 40 }}>
-                  <FontAwesome color="#fff" name="check" size={34} />
+                  <FontAwesome color={this.leftActionActive ? 'purple' : '#fff'} name="check" size={34} />
 
                   {/* <Text style={{ color: '#fff', backgroundColor: this.state.leftStuff ? 'blue' : 'red' }}>
                   Pull to activate
@@ -120,13 +127,23 @@ export default class App extends Component {
                 </View>
               </View>
             }
-            onRightActionActivate={() => this.setState({ rightStuff: true })}
-            onRightActionDeactivate={() => this.setState({ rightStuff: false })}
+            onRightActionActivate={() => {
+              this.rightActionActive = true
+            }}
+            onRightActionDeactivate={() => {
+              this.rightActionActive = false
+            }}
             // onRightActionRelease
             rightContent={
-              <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'flex-start' }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: this.rightActionActive ? '#000' : 'red',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start'
+                }}>
                 <View style={{ paddingHorizontal: 40 }}>
-                  <FontAwesome color="#fff" name="archive" size={34} />
+                  <FontAwesome color={this.rightActionActive ? 'red' : '#fff'} name="archive" size={34} />
                   {/* <Text style={{ color: '#fff', backgroundColor: this.state.rightStuff ? 'orange' : 'green' }}>
                   Pull to activate check
                 </Text> */}
@@ -169,15 +186,29 @@ export default class App extends Component {
 
           <Text style={{ paddingVertical: 5, color: '#aaa', fontSize: 18, paddingHorizontal: 5 }}>Finished Airing</Text>
           <Swipable
-            onSwipeStart={() => this.setState({ isSwiping: true })}
-            onSwipeRelease={() => this.setState({ isSwiping: false })}
-            onLeftActionActivate={() => this.setState({ leftStuff: true })}
-            onLeftActionDeactivate={() => this.setState({ leftStuff: false })}
+            onSwipeStart={() => {
+              this.isSwiping = true
+            }}
+            onSwipeRelease={() => {
+              this.isSwiping = false
+            }}
+            onLeftActionActivate={() => {
+              this.leftActionActive = true
+            }}
+            onLeftActionDeactivate={() => {
+              this.leftActionActive = false
+            }}
             // onLeftActionRelease
             leftContent={
-              <View style={{ flex: 1, backgroundColor: 'purple', justifyContent: 'center', alignItems: 'flex-end' }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: this.leftActionActive ? '#000' : 'purple',
+                  justifyContent: 'center',
+                  alignItems: 'flex-end'
+                }}>
                 <View style={{ paddingHorizontal: 40 }}>
-                  <FontAwesome color="#fff" name="check" size={34} />
+                  <FontAwesome color={this.leftActionActive ? 'purple' : '#fff'} name="check" size={34} />
 
                   {/* <Text style={{ color: '#fff', backgroundColor: this.state.leftStuff ? 'blue' : 'red' }}>
                   Pull to activate
@@ -185,13 +216,23 @@ export default class App extends Component {
                 </View>
               </View>
             }
-            onRightActionActivate={() => this.setState({ rightStuff: true })}
-            onRightActionDeactivate={() => this.setState({ rightStuff: false })}
+            onRightActionActivate={() => {
+              this.rightActionActive = true
+            }}
+            onRightActionDeactivate={() => {
+              this.rightActionActive = false
+            }}
             // onRightActionRelease
             rightContent={
-              <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'flex-start' }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: this.rightActionActive ? '#000' : 'red',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start'
+                }}>
                 <View style={{ paddingHorizontal: 40 }}>
-                  <FontAwesome color="#fff" name="archive" size={34} />
+                  <FontAwesome color={this.rightActionActive ? 'red' : '#fff'} name="archive" size={34} />
                   {/* <Text style={{ color: '#fff', backgroundColor: this.state.rightStuff ? 'orange' : 'green' }}>
                   Pull to activate check
                 </Text> */}
@@ -247,7 +288,14 @@ export default class App extends Component {
             </ImageBackground>
           </Swipable>
         </ScrollView>
+      </View>
+    )
+  }
+}
 
+{
+  /*
+  
         <SectionList
           scrollEnabled={!this.state.isSwiping}
           renderItem={({ item }) => (
@@ -264,8 +312,8 @@ export default class App extends Component {
 
                     {/* <Text style={{ color: '#fff', backgroundColor: this.state.leftStuff ? 'blue' : 'red' }}>
                   Pull to activate
-                </Text> */}
-                  </View>
+                </Text> * /}
+                </View>
                 </View>
               }
               onRightActionActivate={() => this.setState({ rightStuff: true })}
@@ -277,7 +325,7 @@ export default class App extends Component {
                     <FontAwesome color="#fff" name="archive" size={34} />
                     {/* <Text style={{ color: '#fff', backgroundColor: this.state.rightStuff ? 'orange' : 'green' }}>
                   Pull to activate check
-                </Text> */}
+                </Text> * /}
                   </View>
                 </View>
               }>
@@ -314,7 +362,7 @@ export default class App extends Component {
                       }}>
                       <SimpleLineIcons name="clock" style={{ fontSize: 10, color: '#fff', marginHorizontal: 4 }} />
                       {' 16 hours'}
-                    </Text> */}
+                    </Text> * /}
                       <Text
                         style={{
                           paddingHorizontal: 8,
@@ -344,24 +392,5 @@ export default class App extends Component {
             { data: [{ value: '...', key: 0 }], title: 'Just a test' }
           ]}
         />
-      </View>
-    )
-  }
+        */
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  }
-})

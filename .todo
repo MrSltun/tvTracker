@@ -19,10 +19,16 @@ TODO:
   }
 
   - misc.: {
+      implement Jest testing
       prompt for exiting the app
       save list in local storage when exiting the app
       load list from local storage when entering the app
       MobX integrated
       TMDB and trakt.tv apis integration
       Show trending, most popular, ... before searching
+      design logo & splashscreen
+  }
+
+  - later {
+      implement donation system with 10% yours, two 45%s for TMDB & trakt.tv
   }
