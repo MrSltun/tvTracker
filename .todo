@@ -24,11 +24,19 @@ TODO:
       save list in local storage when exiting the app
       load list from local storage when entering the app
       MobX integrated
-      TMDB and trakt.tv apis integration
+      TMDB, and trakt.tv apis integration
       Show trending, most popular, ... before searching
       design logo & splashscreen
+      font: https://fonts.google.com/specimen/Dosis
+      small info behind scrollView
   }
 
   - later {
       implement donation system with 10% yours, two 45%s for TMDB & trakt.tv
+  }
+
+  -iOS linking: {
+      all packages in package.json
+      Deep Linking - https://medium.com/react-native-training/deep-linking-your-react-native-app-d87c39a1ad5e
+
   }
